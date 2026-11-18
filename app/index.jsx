@@ -1,46 +1,53 @@
-import Button from "@/component/Button";
 import { useRouter } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { Image, View } from "react-native";
+import React from "react";
+import {
+  ActivityIndicator,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../context/AuthContext";
 import "../global.css";
 
-export default function index() {
+export default function Index() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, isLoading } = useAuth();
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
-
-  if (isLoading) {
-    return (
-      <SafeAreaView className="flex-1 justify-center items-center bg-gray-200">
-        <Image
-          className="size-40"
-          source={require("../assets/images/logo-t.png")}
-        />
-      </SafeAreaView>
-    );
-  }
+  const handlePress = () => {
+    if (isLoggedIn) {
+      router.navigate("/home");
+    } else {
+      router.navigate("/auth/login");
+    }
+  };
 
   return (
-    <SafeAreaView className="flex-1 justify-center items-center bg-gray-200">
-      <View className="flex-1 justify-end items-center">
+    <SafeAreaView className="flex-1 justify-center items-center">
+      <View className="flex-1 justify-center items-center">
         <Image
           className="size-40"
-          source={require("../assets/images/logo-t.png")}
+          source={require("@/assets/images/logo-t.png")}
         />
       </View>
 
-      <View className="flex-1 justify-end items-center mb-10">
-        <Button
-          label={"Get Started"}
-          onPress={() => router.navigate("/onboarding/onboarding01")}
-        />
+      <View className="w-full px-10 mb-10">
+        <TouchableOpacity
+          className={`bg-[#3D6DB4] w-full py-6 rounded-3xl ${
+            isLoading ? "opacity-50" : ""
+          }`}
+          onPress={handlePress}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#ffffff" />
+          ) : (
+            <Text className="text-white text-center text-lg font-bold">
+              Get Started
+            </Text>
+          )}
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
